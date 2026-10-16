@@ -16,7 +16,7 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install dependencies
+    - name: Install dependencies & Android Build Tools
       run: |
         sudo apt-get update
         sudo apt-get install -y \
@@ -33,7 +33,15 @@ jobs:
             libswscale-dev \
             libavformat-dev \
             libavcodec-dev \
-            zlib1g-dev
+            zlib1g-dev \
+            openjdk-17-jdk \
+            autoconf \
+            libtool \
+            pkg-config
+        
+        # Android SDK ve AIDL paketlerinin hazırlanması
+        sudo $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        sudo $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "build-tools;33.0.2" "platforms;android-33"
 
     - name: Install Buildozer and Cython
       run: |
@@ -44,7 +52,7 @@ jobs:
     - name: Build with Buildozer
       run: |
         export PATH=$PATH:~/.local/bin
-        buildozer -v android debug
+        yes | buildozer -v android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
