@@ -54,10 +54,12 @@ jobs:
         pip install --user buildozer
 
     - name: Build with Buildozer
+      env:
+        HOME: /home/runner
       run: |
         export PATH=$PATH:~/.local/bin
-        export HOME=/home/runner
-        buildozer -v android debug
+        # Buildozer'ın kendi SDK'yı kurmasına ve lisansları kabul etmesine izin ver
+        yes | buildozer -v android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
